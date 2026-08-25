@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 
-class LoginScreen extends StatefulWidget {
-  // Renomeei a tela para deixar claro que ela representa o login do aplicativo.
-  const LoginScreen({super.key});
+class CadastroScreen extends StatefulWidget {
+  const CadastroScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<CadastroScreen> createState() => _CadastroScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _CadastroScreenState extends State<CadastroScreen> {
   final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   bool _obscurePassword = true;
   bool _isLoading = false;
@@ -19,9 +20,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
+  }
+
+  String? _validateName(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return 'Informe seu nome';
+    }
+    return null;
   }
 
   String? _validateEmail(String? value) {
@@ -45,7 +55,17 @@ class _LoginScreenState extends State<LoginScreen> {
     return null;
   }
 
-  Future<void> _handleLogin() async {
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Confirme sua senha';
+    }
+    if (value != _passwordController.text) {
+      return 'As senhas não coincidem';
+    }
+    return null;
+  }
+
+  Future<void> _handleCadastro() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
@@ -58,7 +78,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text('Login enviado para: ${_emailController.text}'),
+        content: Text('Cadastro enviado para: ${_emailController.text}'),
       ),
     );
   }
@@ -93,7 +113,6 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     SizedBox(
                       height: 90,
-                      // Mantenho a segunda imagem também no topo da tela de login.
                       child: Image.asset(
                         'assets/fotos/logo2.png',
                         fit: BoxFit.contain,
@@ -102,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     
                     const SizedBox(height: 16),
                     Text(
-                      'Bem-vindo de volta',
+                      'Crie sua conta',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             fontWeight: FontWeight.bold,
@@ -110,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Faça login para continuar',
+                      'Cadastre-se para continuar',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: Colors.grey[600],
@@ -118,7 +137,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 32),
 
-                    // Campo de e-mail com validação antes de enviar o formulário.
+                    TextFormField(
+                      controller: _nameController,
+                      textCapitalization: TextCapitalization.words,
+                      validator: _validateName,
+                      decoration: const InputDecoration(
+                        labelText: 'Nome',
+                        prefixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
                     TextFormField(
                       controller: _emailController,
                       keyboardType: TextInputType.emailAddress,
@@ -131,7 +161,6 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
 
-                    // Campo de senha com opção para mostrar ou esconder o texto.
                     TextFormField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
@@ -154,31 +183,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
 
-                    Align(
-                      alignment: Alignment.centerRight,
-                      child: TextButton(
-                        onPressed: () {
-                          // TODO: navegar para tela de "esqueci minha senha"
-                        },
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 4,
-                          ),
-                          minimumSize: Size.zero,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        ),
-                        child: const Text(
-                          'Esqueci minha senha',
-                          style: TextStyle(fontSize: 12),
-                        ),
+                    TextFormField(
+                      controller: _confirmPasswordController,
+                      obscureText: _obscurePassword,
+                      validator: _validateConfirmPassword,
+                      decoration: const InputDecoration(
+                        labelText: 'Confirmar senha',
+                        prefixIcon: Icon(Icons.lock_outline),
+                        border: OutlineInputBorder(),
                       ),
                     ),
                     const SizedBox(height: 16),
 
-                    // Enquanto a simulação acontece, desabilito o botão e mostro o carregamento.
                     FilledButton(
-                      onPressed: _isLoading ? null : _handleLogin,
+                      onPressed: _isLoading ? null : _handleCadastro,
                       style: FilledButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
@@ -191,7 +209,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 color: Colors.white,
                               ),
                             )
-                          : const Text('Entrar'),
+                          : const Text('Criar conta'),
                     ),
                   ],
                 ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 // Eu importo a tela de login para os botões abrirem a próxima etapa do fluxo.
 import 'login.dart';
+import 'cadastro.dart';
 
 // Cores extraídas do design (ajuste os hex se tiver os valores exatos do Figma)
 const Color kFolksNavy = Color(0xFF1B2A6B);
@@ -15,16 +16,17 @@ class WelcomeScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF), // fundo escuro atrás do card
       body: SafeArea(
-        child: Center(
-          child: Container(
-            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
-            constraints: const BoxConstraints(maxWidth: 420),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(24),
-            ),
-            child: Column(
+        child: SingleChildScrollView(
+          child: Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+              constraints: const BoxConstraints(maxWidth: 420),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
@@ -66,11 +68,11 @@ class WelcomeScreen extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: Colors.black87,
-                        height: 1.4,
+                        height: 1.2,
                       ),
                 ),
 
-                const SizedBox(height: 32),
+                const SizedBox(height: 12),
 
                 // O botão de login leva para a tela de autenticação.
                 ElevatedButton(
@@ -94,7 +96,11 @@ class WelcomeScreen extends StatelessWidget {
                 // Deixo este botão preparado para a futura tela de cadastro.
                 ElevatedButton(
                   onPressed: () {
-                    // TODO: trocar pela CadastroScreen quando ela existir
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const CadastroScreen(),
+                      ),
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: kFolksGray,
@@ -143,6 +149,7 @@ class WelcomeScreen extends StatelessWidget {
                 ),
                 
               ],
+              ),
             ),
           ),
         ),
