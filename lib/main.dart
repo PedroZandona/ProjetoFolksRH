@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:projeto_01/starter.dart';
+import 'package:projeto_01/routes/app_router.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,8 +17,9 @@ class MyApp extends StatelessWidget {
         colorSchemeSeed: Colors.indigo,
         useMaterial3: true,
       ),
-      // Eu começo pela tela de carregamento para depois apresentar a welcome.
-      home: const Starter(),
+      initialRoute: '/',
+      onGenerateRoute: const AppRouter().generateRoute,
+      onUnknownRoute: const AppRouter().generateUnknownRoute,
     );
   }
 }
